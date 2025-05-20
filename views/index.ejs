@@ -1,0 +1,73 @@
+<%- include("partials/header.ejs") %>
+
+    <div class="books">
+        <div class="order">
+            <p>Order By: </p>
+            <form action="/order" method="post">
+                <select name="order" id="order-option">
+                    <option value="title">Book Title</option>
+                    <option value="author">Book Author</option>
+                    <option value="rating">Book Rating</option>
+                </select>
+                <input type="submit" value="Proceed">
+            </form>
+        </div>
+        <% locals.data.forEach(book=> { %>
+            <div class="book">
+                <% if (book.cover_id == 0){ %>
+                    <div class="blank-cover">
+                        <div>
+                            <h3><%= book.title %></h3>
+                            <h4>By <%= book.author %></h4>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <img src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-L.jpg"
+                            srcset="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-L.jpg 2x" alt="Book cover of <%= book.title %>">
+                    <% } %>
+                            <div class="book-details">
+                                <h2>
+                                    <%= book.title %>
+                                </h2>
+                                <h3>By <%= book.author %>
+                                </h3>
+                                <h3>Review:</h3>
+                                <p>
+                                    <%= book.review_text %>
+                                </p>
+                                <p><strong>Review Date: </strong>
+                                    <%= book.review_date %>
+                                </p>
+                                <h3>Rating</h3>
+                                <div class="card-rating" action="" method="post">
+                                    <% for (let i=0; i < book.rating; i++) { %>
+                                        <span class="fa fa-star checked"></span>
+                                        <% } %>
+                                            <% if(book.rating < 5){ %>
+                                                <% for ( let i=0; i < (5-book.rating); i++) { %>
+                                                    <span class="fa fa-star"></span>
+                                                    <% } %>
+                                                        <% } %>
+                                </div>
+
+                                <div class="button edit">
+                                    <a
+                                        href="/book?title=<%=book.title%>&author=<%= book.author %>&coverId=<%= book.cover_id %>">
+                                        <button type="button">EDIT</button>
+                                    </a>
+                                    
+                                    <button onclick="deleteData('<%=book.book_id%>')" type="button">DELETE</button>
+                                    
+                                </div>
+                            </div>
+
+
+            </div>
+            <% }); %>
+
+    </div>
+
+
+
+
+    <%- include("partials/footer.ejs") %>

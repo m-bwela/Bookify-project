@@ -1,0 +1,142 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css');
+
+body {
+    background-color: yellow;
+    color: black;
+    display: grid;
+    margin: 0%;
+    padding: 0%;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar {
+    background-color: #333;
+    overflow: hidden;
+}
+
+.navbar a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.order {
+    margin-bottom: 20px;
+    align-self: flex-start;
+}    
+
+.checked {
+    color: orange;
+}
+
+label > span:hover {
+    cursor: pointer;
+}
+
+.books {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 70%;    
+}
+
+.book > img {
+    margin-top: 20px;
+    margin-right: 20px;
+    height: fit-content;
+    min-width: 25%;
+}
+
+p {
+  margin-bottom: 10px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.fa {
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 2px;
+  border-radius: 50%;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-linkedin {
+  background: #007bb5;
+  color: white;
+}
+
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+}
+
+.fa-github {
+  background: black;
+  color: white;
+}
+
+.fa-home {
+  padding: 0%;
+  border-radius: 0%;
+}
+
+.fa-search {
+  padding: 0%;
+}
+
+.btn {
+    background-color: DodgerBlue;
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Darker background on mouse-over */
+  .btn:hover {
+    background-color: RoyalBlue;
+  }
+
+  #myBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 20px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    border: none; /* Remove borders */
+    outline: none; /* Remove outline */
+    background-color: #A87676; /* Set a background color */
+    color: white; /* Text color */
+    cursor: pointer; /* Add a mouse pointer on hover */
+    padding: 15px; /* Some padding */
+    border-radius: 10px; /* Rounded corners */
+    font-size: 18px; /* Increase font size */
+  }
+  
+  #myBtn:hover {
+    background-color: #555; /* Add a dark-grey background on hover */
+  }
+
+
+
+
+
+
+
+
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 40px;
+  text-align: center;
+  margin-top: auto;
+  position: relative;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
