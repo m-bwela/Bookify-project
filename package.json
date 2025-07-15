@@ -1,17 +1,19 @@
 {
   "name": "capstone-project-5-book-notes",
   "version": "1.0.0",
-  "description": "",
+  "description": "A book notes app built with Node.js, Express, EJS, and PostgreSQL.",
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Tye Joseph",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.9.0",
+    
     "body-parser": "^2.2.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",

@@ -18,14 +18,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const searchTerm = searchInput.value.trim();
         console.log("Search Term: ", searchTerm);
 
+        if (!searchTerm) {
+            dropdownList.innerHTML = "";
+            dropdownList.style.display = 'none';
+            return;
+        }
+
         try {
-            const { bookTitle, bookAuthor, coverId } = await fetchData(searchTerm);            
-            
+            const { bookTitle, bookAuthor, coverId } = await fetchData(searchTerm);
             console.log("Searched Book: ", bookTitle);
             console.log("Cover Id: ", coverId);
             console.log("Book Author: ", bookAuthor);
             // Update the dropdown list
-            await updateDropdown(bookTitle, coverId, bookAuthor, dropdownList);
+            updateDropdown(bookTitle, coverId, bookAuthor, dropdownList);
         } catch (error) {
             console.error('Error updating dropdown:', error);
         }
@@ -35,19 +40,28 @@ document.addEventListener('DOMContentLoaded', function () {
     searchInput.addEventListener('input', debounce(handleDebouncedInput, 300));
 
     document.addEventListener('click', function (event) {
-        // Close dropdown when clicking outside the search container
-        if (!event.target.closest('.dropdown')) {
+        // Close dropdown when clicking outside the dropdownList or searchInput
+        if (!event.target.closest('#dropdownList') && event.target !== searchInput) {
             dropdownList.style.display = 'none';
         }
     });
-    // Star rating label click logic (vanilla JS)
+    // Star rating label click logic (vanilla JS, improved accessibility)
     const labels = document.querySelectorAll(".rating-stars label");
-    labels.forEach(label => {
+    labels.forEach((label, idx) => {
+        label.setAttribute('tabindex', '0');
         label.addEventListener("click", function() {
             labels.forEach(l => l.classList.remove("checked"));
-            const labelValue = parseInt(this.getAttribute("for").replace(/[^0-9]/g, ""));
-            for (let i = 0; i < labelValue; i++) {
-                if (labels[i]) labels[i].classList.add("checked");
+            for (let i = 0; i <= idx; i++) {
+                labels[i].classList.add("checked");
+            }
+        });
+        label.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+                e.preventDefault();
+                labels.forEach(l => l.classList.remove("checked"));
+                for (let i = 0; i <= idx; i++) {
+                    labels[i].classList.add("checked");
+                }
             }
         });
     });
@@ -92,8 +106,13 @@ function escapeHTML(str) {
 
 function updateDropdown(items, coverId, bookAuthor, dropdownList) {
     // Create valid dropdown structure: ul > li > a
-    const html = `<ul class="dropdown-list-ul">` + items.map((item, index) =>
-        `<li class="listItem">
+    if (!items || items.length === 0) {
+        dropdownList.innerHTML = "";
+        dropdownList.style.display = 'none';
+        return;
+    }
+    const html = `<ul class="dropdown-list-ul" role="listbox">` + items.map((item, index) =>
+        `<li class="listItem" role="option">
             <a href="/book?title=${encodeURIComponent(item)}&author=${encodeURIComponent(bookAuthor[index])}&cover_id=${coverId[index] ? coverId[index] : 0}">
                 <img src="https://covers.openlibrary.org/b/id/${coverId[index]}-S.jpg?default=https://openlibrary.org/static/images/icons/avatar_book-sm.png" width="40" height="60" alt="book picture">
                 <div>
@@ -103,11 +122,5 @@ function updateDropdown(items, coverId, bookAuthor, dropdownList) {
             </a>
         </li>`).join('') + `</ul>`;
     dropdownList.innerHTML = html;
-
-    // Show/hide dropdown
-    if (items.length > 0) {
-        dropdownList.style.display = 'block';
-    } else {
-        dropdownList.style.display = 'none';
-    }
+    dropdownList.style.display = 'block';
 }
