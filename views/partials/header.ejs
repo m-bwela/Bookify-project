@@ -29,16 +29,17 @@
   </div>
 </nav>
 
-<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+<button onclick="topFunction()" id="myBtn" title="Go to top" aria-label="Scroll to top" style="display:none;">Top</button>
 
 <script>
-    // Get the button:
-let mybutton = document.getElementById("myBtn");
+// Get the button:
+var mybutton = document.getElementById("myBtn");
 
 // When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function() {scrollFunction()};
+window.onscroll = function() { scrollFunction(); };
 
 function scrollFunction() {
+  if (!mybutton) return;
   if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
     mybutton.style.display = "block";
   } else {

@@ -39,25 +39,17 @@
                                     <%= book.review_date %>
                                 </p>
                                 <h3>Rating</h3>
-                                <div class="card-rating" action="" method="post">
-                                    <% for (let i=0; i < book.rating; i++) { %>
-                                        <span class="fa fa-star checked"></span>
-                                        <% } %>
-                                            <% if(book.rating < 5){ %>
-                                                <% for ( let i=0; i < (5-book.rating); i++) { %>
-                                                    <span class="fa fa-star"></span>
-                                                    <% } %>
-                                                        <% } %>
+                                <div class="card-rating" aria-label="Book rating: <%= book.rating %> out of 5 stars">
+                                    <% for (let i = 1; i <= 5; i++) { %>
+                                        <span class="fa fa-star<%= i <= book.rating ? ' checked' : '' %>"></span>
+                                    <% } %>
                                 </div>
 
                                 <div class="button edit">
-                                    <a
-                                        href="/book?title=<%=book.title%>&author=<%= book.author %>&coverId=<%= book.cover_id %>">
-                                        <button type="button">EDIT</button>
+                                    <a href="/book?title=<%= encodeURIComponent(book.title) %>&author=<%= encodeURIComponent(book.author) %>&cover_id=<%= book.cover_id %>">
+                                        EDIT
                                     </a>
-                                    
-                                    <button onclick="deleteData('<%=book.book_id%>')" type="button">DELETE</button>
-                                    
+                                    <button onclick="deleteData('<%= book.book_id %>')" type="button">DELETE</button>
                                 </div>
                             </div>
 

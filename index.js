@@ -58,6 +58,21 @@ app.get("/book", async(req, res) => {
   }
 });
 
+
+app.get("/search", async (req, res) => {
+  // Accept ?search=, ?q=, or ?title= as query param
+  const query = req.query.q || req.query.search || req.query.title || "";
+  try {
+    const response = await db.query(
+      "SELECT * FROM books JOIN book_reviews ON books.book_id = book_reviews.book_id WHERE books.title ILIKE $1 OR books.author ILIKE $1",
+      [`%${query}%`]
+    );
+    res.render("index.ejs", { search: query, data: response.rows });
+  } catch (error) {
+    res.status(500).send("Error searching for books.");
+  }
+});
+
 app.post("/order", async(req, res) => {
   sort = req.body.sort;
   order = 'ASC';
@@ -68,41 +83,59 @@ app.post("/order", async(req, res) => {
 });
 
 app.post("/add", async(req, res) => {
-  const title = req.body.title;
-  const review_text =req.body.review_text;
+  const title = req.body.title?.trim();
+  const review_text = req.body.review_text?.trim();
   const coverId = req.body.cover_id;
   const rating = req.body.rating;
-  const author = req.body.author;
+  const author = req.body.author?.trim();
+
+  // Basic validation
+  if (!title || !review_text || !author || !rating) {
+    return res.status(400).send("Missing required fields.");
+  }
 
   try {
     await db.query('BEGIN');
-    const newBook = await db.query(`INSERT INTO books (title, author, cover_id)
-      VALUES ($1, $2, $3) RETURNING book_id`, [title, author, coverId]
-    );
-    const newReview = await db.query(`INSERT INTO book_reviews (book_id, review_text, rating)
-      VALUES ($1, $2, $3) RETURNING *`, [newBook.rows[0].book_id, review_text, rating]
-    );
-     await db.query('COMMIT');
-     res.redirect("/");
+    // Check if book already exists
+    const existingBook = await db.query(`SELECT book_id FROM books WHERE title = $1 AND author = $2 AND cover_id = $3`, [title, author, coverId]);
+    let bookId;
+    if (existingBook.rows.length > 0) {
+      bookId = existingBook.rows[0].book_id;
+    } else {
+      const newBook = await db.query(`INSERT INTO books (title, author, cover_id)
+        VALUES ($1, $2, $3) RETURNING book_id`, [title, author, coverId]);
+      bookId = newBook.rows[0].book_id;
+    }
+    // Insert review
+    await db.query(`INSERT INTO book_reviews (book_id, review_text, rating)
+      VALUES ($1, $2, $3) RETURNING *`, [bookId, review_text, rating]);
+    await db.query('COMMIT');
+    res.redirect("/");
   } catch (error) {
+    await db.query('ROLLBACK');
     console.log("An Error occurred in adding the book review.", error.message);
-    res.status(400);
+    res.status(400).send("Error adding book review.");
   }
 });
 
 app.post("/amendReview", async(req, res) => {
-  const review_text = req.body.review_text;
+  const review_text = req.body.review_text?.trim();
   const book_id = req.body.bookId;
   const rating = req.body.rating;
   const currentDate = new Date().toISOString();
 
+  if (!review_text || !book_id || !rating) {
+    return res.status(400).send("Missing required fields.");
+  }
+
   try {
-    const response = await db.query(`UPDATE book_reviews SET review_text = $1, rating = $2, review_date = $3 WHERE book_id = $4 RETURNING *`, [review_text, book_id, rating, currentDate]);
+    const response = await db.query(`UPDATE book_reviews SET review_text = $1, rating = $2, review_date = $3 WHERE book_id = $4 RETURNING *`, [review_text, rating, currentDate, book_id]);
     const result = response.rows;
     console.log(`${book_id}, ${rating}, ${currentDate}`);
     res.redirect("/");
   } catch (error) {
     console.log("Error:", error);
+    res.status(400).send("Error amending review.");
   }
 });
 
@@ -113,8 +146,10 @@ app.delete("/delete/:id", async(req, res) => {
     await db.query('BEGIN');
     await db.query("DELETE FROM book_reviews WHERE book_id = $1", [bookId]);
     await db.query("DELETE FROM books WHERE book_id = $1", [bookId]);
-    await db.query("COMMIT");
+    await db.query('COMMIT');
+    res.status(200).send("Review deleted successfully.");
   } catch (error) {
+    await db.query('ROLLBACK');
     res.status(500).send("Error deleting review.");
   }
 });

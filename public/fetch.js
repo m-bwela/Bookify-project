@@ -1,4 +1,4 @@
-document.addEventListener('DOM is fully loaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchInput');
     const dropdownList = document.getElementById('dropdownList');
 
@@ -40,16 +40,17 @@ document.addEventListener('DOM is fully loaded', function () {
             dropdownList.style.display = 'none';
         }
     });
-    const label = $("label");
-    const labelArray = document.querySelectorAll("label");
-    //Add checked (orange color) class clicked labels.    
-    label.on("click", function(event) {          
-        label.removeClass("checked");        
-        const labelValue = $(this).attr("for");
-        for (let i = 0; i < labelValue; i++) {            
-            $(labelArray[i]).addClass("checked");            
-        }       
-    })   
+    // Star rating label click logic (vanilla JS)
+    const labels = document.querySelectorAll(".rating-stars label");
+    labels.forEach(label => {
+        label.addEventListener("click", function() {
+            labels.forEach(l => l.classList.remove("checked"));
+            const labelValue = parseInt(this.getAttribute("for").replace(/[^0-9]/g, ""));
+            for (let i = 0; i < labelValue; i++) {
+                if (labels[i]) labels[i].classList.add("checked");
+            }
+        });
+    });
     
 });
 
@@ -76,20 +77,32 @@ async function fetchData(searchTerm) {
     }
 }
 
-async function updateDropdown(items, coverId, bookAuthor, dropdownList) {
-    //create list items based on the fetch results. 
-       
-    const html = items.map((item, index) =>
-        `<a href="/book?title=${item}&author=${bookAuthor[index]}&coverId=${coverId[index]? coverId[index]: 0}">
-        <li class="listItem">
-        <img src="https://covers.openlibrary.org/b/id/${coverId[index]}-S.jpg?default=https://openlibrary.org/static/images/icons/avatar_book-sm.png" width="40" height="60" alt="book picture">
-        <div>
-        <p><strong>${item}</strong></p>
-        <p>By ${bookAuthor[index]}</p>
-        </div>
-        </li>
-        </a>`).join('');
-    dropdownList.innerHTML = html;    
+function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, function(tag) {
+        const charsToReplace = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        };
+        return charsToReplace[tag] || tag;
+    });
+}
+
+function updateDropdown(items, coverId, bookAuthor, dropdownList) {
+    // Create valid dropdown structure: ul > li > a
+    const html = `<ul class="dropdown-list-ul">` + items.map((item, index) =>
+        `<li class="listItem">
+            <a href="/book?title=${encodeURIComponent(item)}&author=${encodeURIComponent(bookAuthor[index])}&cover_id=${coverId[index] ? coverId[index] : 0}">
+                <img src="https://covers.openlibrary.org/b/id/${coverId[index]}-S.jpg?default=https://openlibrary.org/static/images/icons/avatar_book-sm.png" width="40" height="60" alt="book picture">
+                <div>
+                    <p><strong>${escapeHTML(item)}</strong></p>
+                    <p>By ${escapeHTML(bookAuthor[index])}</p>
+                </div>
+            </a>
+        </li>`).join('') + `</ul>`;
+    dropdownList.innerHTML = html;
 
     // Show/hide dropdown
     if (items.length > 0) {
@@ -97,5 +110,4 @@ async function updateDropdown(items, coverId, bookAuthor, dropdownList) {
     } else {
         dropdownList.style.display = 'none';
     }
-
 }

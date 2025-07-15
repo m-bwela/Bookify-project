@@ -29,7 +29,7 @@
                     <!-- if review exists, edit review else write review -->
                     <% if (locals.review) { %>
                         <h3>Edit Review:</h3>
-                        <textarea name="review_text" id="review_text" cols="30" rows="10" required><%- locals.review %></textarea>
+                        <textarea name="review_text" id="review_text" cols="30" rows="10" required><%= locals.review %></textarea>
                     <% } else { %>
                         <h3>Write review:</h3>
                         <textarea name="review_text" id="review_text" cols="30" rows="10" required></textarea>
@@ -54,7 +54,7 @@
                         <% if(locals.review) { %>
                             <input type="submit" value="Update" formmethod="post" formaction="/amendReview">
                         <% } else { %>
-                            <input type="submit" value="Add review" formmethod="post" action="/add">
+                            <input type="submit" value="Add review" formmethod="post" formaction="/add">
                         <% } %>
                     </div>
                 </div>

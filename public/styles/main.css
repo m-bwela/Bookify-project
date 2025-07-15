@@ -25,10 +25,6 @@ body {
 p {
   margin-bottom: 10px;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-p {
-
-/* Remove unused .star class if not used in HTML */
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -36,8 +32,14 @@ p {
   border-radius: 50%;
 }
 
-.fa:hover {
-    opacity: 0.7;
+
+.fa {
+  font-size: 1.5em;
+  transition: color 0.2s, background 0.2s;
+}
+.fa:hover, .fa:focus {
+  opacity: 0.7;
+  outline: none;
 }
 
 .fa-linkedin {
@@ -64,19 +66,45 @@ p {
   padding: 0%;
 }
 
+
 .btn {
-    background-color: DodgerBlue;
-    border: none;
-    color: white;
-    padding: 12px 16px;
-    font-size: 16px;
-    cursor: pointer;
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn:hover, .btn:focus {
+  background-color: RoyalBlue;
+  outline: 2px solid #fff;
+}
+/* Utility classes for margin and padding */
+.mb-1 { margin-bottom: 0.5rem !important; }
+.mb-2 { margin-bottom: 1rem !important; }
+.mt-1 { margin-top: 0.5rem !important; }
+.mt-2 { margin-top: 1rem !important; }
+.p-1 { padding: 0.5rem !important; }
+.p-2 { padding: 1rem !important; }
+/* Responsive design */
+@media (max-width: 768px) {
+  .books {
+    width: 95%;
+    padding: 0.5rem;
   }
-  
-  /* Darker background on mouse-over */
-  .btn:hover {
-    background-color: RoyalBlue;
+  .book-details {
+    padding: 0.5rem;
+    font-size: 1rem;
   }
+  .footer {
+    padding: 20px;
+    font-size: 0.9rem;
+  }
+  .container {
+    padding: 0.5rem;
+  }
+}
 
   #myBtn {
     display: none; /* Hidden by default */
