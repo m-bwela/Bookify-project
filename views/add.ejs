@@ -16,7 +16,7 @@
                         </div>
                     </div>
                 <% } else { %>
-                    <img src="//covers.openlibrary.org/b/id/<%= locals.cover %>-L.jpg" alt="Book cover of <%= book.title %>">
+                    <img src="//covers.openlibrary.org/b/id/<%= locals.cover %>-L.jpg" alt="Book cover of <%= locals.title %>">
                 <% } %>
 
                 
@@ -29,7 +29,7 @@
                     <!-- if review exists, edit review else write review -->
                     <% if (locals.review) { %>
                         <h3>Edit Review:</h3>
-                        <textarea name="review_text" id="review_text" cols="30" rows="10" required><%= review %></textarea>
+                        <textarea name="review_text" id="review_text" cols="30" rows="10" required><%= locals.review %></textarea>
                     <% } else { %>
                         <h3>Write review:</h3>
                         <textarea name="review_text" id="review_text" cols="30" rows="10" required></textarea>
