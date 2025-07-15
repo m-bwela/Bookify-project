@@ -1,7 +1,7 @@
 <%- include("partials/header.ejs") %>
 
     <div class="books">
-        <form action="/amendReview">
+        <form action="/amendReview" method="post" class="add-review">
             <div class="book">
                 <input type="hidden" name="cover_id" value="<%= locals.cover %>">
                 <input type="hidden" name="title" value="<%= locals.title %>">
@@ -29,44 +29,33 @@
                     <!-- if review exists, edit review else write review -->
                     <% if (locals.review) { %>
                         <h3>Edit Review:</h3>
-                        <textarea name="review_text" id="review_text" cols="30" rows="10" required><%= locals.review %></textarea>
+                        <textarea name="review_text" id="review_text" cols="30" rows="10" required><%- locals.review %></textarea>
                     <% } else { %>
                         <h3>Write review:</h3>
                         <textarea name="review_text" id="review_text" cols="30" rows="10" required></textarea>
-                    <% } %>                    
+                    <% } %>
                     
-                    <h3>Your Rating:</h3>                    
-                    <div class="rating">
-                        <input id="1" type="radio" name="rating" value="1" required>
-                        <label for="1">
-                            <span class="fa fa-star"></span>
-                        </label>
-                        <input id="2" type="radio" name="rating" value="2">
-                        <label for="2">
-                            <span class="fa fa-star"></span>
-                        </label>
-                        <input id="3" type="radio" name="rating" value="3">
-                        <label for="3">
-                            <span class="fa fa-star"></span>
-                        </label>
-                        <input id="4" type="radio" name="rating" value="4">
-                        <label for="4">
-                            <span class="fa fa-star"></span>
-                        </label>
-                        <input id="5" type="radio" name="rating" value="5">
-                        <label for="5">
-                            <span class="fa fa-star"></span>
-                        </label>
+                    <h3>Your Rating:</h3>
+                    <div class="rating-stars">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                            <input id="rating-<%= i %>" type="radio" name="rating" value="<%= i %>" <%= (locals.rating && locals.rating == i) ? 'checked' : '' %> <%= i === 1 ? 'required' : '' %>>
+                            <label for="rating-<%= i %>">
+                                <span class="fa fa-star"></span>
+                            </label>
+                        <% } %>
                     </div>
-                    <div id="error-message" width="200px" style="color: red;"></div>                    
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div id="error-message" style="width:200px; color:red;"><%= error %></div>
+                    <% } else { %>
+                        <div id="error-message" style="width:200px; color:red;"></div>
+                    <% } %>
 
                     <div class="button edit">
-                        <% if(locals.review) {%>
-                            <input onclick="validateForm()" type="submit" value="Update" formmethod="post" formaction="/amendReview">
+                        <% if(locals.review) { %>
+                            <input type="submit" value="Update" formmethod="post" formaction="/amendReview">
                         <% } else { %>
-                            <input onclick="validateForm()" type="submit" value="Add review" formmethod="post" formaction="/add">
+                            <input type="submit" value="Add review" formmethod="post" action="/add">
                         <% } %>
-                        
                     </div>
                 </div>
 

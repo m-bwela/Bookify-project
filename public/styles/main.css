@@ -20,39 +20,15 @@ body {
   color: black;
 }
 
-.order {
-    margin-bottom: 20px;
-    align-self: flex-start;
-}    
 
-.checked {
-    color: orange;
-}
-
-label > span:hover {
-    cursor: pointer;
-}
-
-.books {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    width: 70%;    
-}
-
-.book > img {
-    margin-top: 20px;
-    margin-right: 20px;
-    height: fit-content;
-    min-width: 25%;
-}
-
+/* Star rating system - horizontal stars, highlight on hover and checked */
 p {
   margin-bottom: 10px;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+p {
 
-.fa {
+/* Remove unused .star class if not used in HTML */
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -124,10 +100,15 @@ p {
 
 
 
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-
-
-
+.container > .content {
+  flex: 1;
+}
 
 .footer {
   background-color: #333;
@@ -140,3 +121,19 @@ p {
   bottom: 0;
   width: 100%;
 }
+
+.footer a {
+  color: #fff;
+  text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
+}
+.footer p {
+  margin: 0;
+}
+.footer .social-icons {
+  margin-top: 20px;
+}
+
+/* Footer social icons - cleaned up and deduplicated */
